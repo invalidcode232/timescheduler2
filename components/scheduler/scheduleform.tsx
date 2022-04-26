@@ -3,7 +3,7 @@ import { Button, FormControl, FormLabel, Input, InputGroup, InputLeftElement, Mo
 import { FaClock } from 'react-icons/fa'
 import { DocumentData, Timestamp } from 'firebase/firestore';
 import moment from 'moment';
-import scheduler from '../../utils/schedulercontext';
+import {scheduler} from '../../utils/context';
 
 function onAdd(onClose: any, toast: any) {
     const time = document.querySelector('[name=time]') as HTMLInputElement;

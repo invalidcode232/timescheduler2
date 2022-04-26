@@ -7,7 +7,7 @@ export class Scheduler {
     private schedules: Array<DocumentSnapshot>;
     private collection: CollectionReference;
 
-    fetchSchedules = (callback: Function) => {
+    fetch = (callback: Function) => {
         onSnapshot(this.collection, (snapshot) => {
             this.schedules = snapshot.docs;
             callback(snapshot.docs);
@@ -73,11 +73,11 @@ export class Scheduler {
         return shouldTrigger;
     }
 
-    deleteSchedule = async (schedule: DocumentReference) => {
+    delete = async (schedule: DocumentReference) => {
         return deleteDoc(schedule);
     }
 
-    editSchedule = async (schedule: DocumentReference, name: string, time: Timestamp, repeatEvery: Array<string>) => {
+    edit = async (schedule: DocumentReference, name: string, time: Timestamp, repeatEvery: Array<string>) => {
         return setDoc(schedule, {
             name: name,
             time: time,

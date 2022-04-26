@@ -1,4 +1,3 @@
-import '../styles/globals.css'
 import type { AppProps } from 'next/app'
 import { ChakraProvider, ColorModeScript, extendTheme, ThemeConfig } from '@chakra-ui/react'
 

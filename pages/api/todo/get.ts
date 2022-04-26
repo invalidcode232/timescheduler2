@@ -1,6 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
-import scheduler from '../../../utils/schedulercontext'
+import scheduler from '../../../utils/context'
 
 type Data = {
     name: string

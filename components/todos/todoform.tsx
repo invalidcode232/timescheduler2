@@ -1,6 +1,8 @@
-import { Button, FormControl, FormLabel, Input, InputGroup, InputLeftElement, ModalBody, ModalCloseButton, ModalFooter, Select, Spacer, toast } from '@chakra-ui/react'
+import { Button, FormControl, FormLabel, Input, InputGroup, InputLeftElement, ModalBody, ModalCloseButton, ModalFooter, Select, Spacer, useToast } from '@chakra-ui/react'
 import { DocumentData, Timestamp } from 'firebase/firestore'
+import moment from 'moment'
 import React from 'react'
+import { todos } from '../../utils/context'
 
 type Props = {
     onClose: () => void,
@@ -10,6 +12,23 @@ type Props = {
 
 function onAdd(onClose: any, toast: any) {
     // TODO: Add callback
+    const nameInput = document.querySelector('[name=name]') as HTMLInputElement
+    const descriptionInput = document.querySelector('[name=description]') as HTMLInputElement
+    const dateInput = document.querySelector('[name=date]') as HTMLInputElement
+
+    const date = moment(dateInput.value, 'YYYY-MM-DD').toDate()
+
+    todos.add(nameInput.value, date, descriptionInput.value)
+
+    toast({
+        title: 'Todo added',
+        description: `${nameInput.value} is added!`,
+        status: 'success',
+        duration: 5000,
+        isClosable: true,
+    })
+
+    onClose()
 }
 
 function timestampToTime(timestamp: Timestamp) {
@@ -24,6 +43,8 @@ function timestampToTime(timestamp: Timestamp) {
 
 
 function TodoForm({ onClose, edit, data }: Props) {
+    const toast = useToast();
+
     return (
         <>
             <ModalBody>
@@ -43,7 +64,7 @@ function TodoForm({ onClose, edit, data }: Props) {
 
                 <FormControl>
                     <FormLabel>Due time (optional)</FormLabel>
-                    <Input type={'datetime-local'} name='date' />
+                    <Input type={'date'} name='date' />
                 </FormControl>
 
                 {/* <Spacer my={'3'} />

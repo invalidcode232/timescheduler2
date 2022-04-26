@@ -2,6 +2,7 @@ import * as firebase from 'firebase/app'
 import 'firebase/firestore'
 import { getFirestore } from 'firebase/firestore'
 import { Scheduler } from './scheduler';
+import { Todos } from './todos';
 
 const firebaseConfig = {
     apiKey: "AIzaSyDNeJc6JswSew7T1OZLFY2zu5N0WeqjmAw",
@@ -17,5 +18,6 @@ const app = firebase.initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 const scheduler = new Scheduler(db);
+const todos = new Todos(db);
 
-export default scheduler;
+export {scheduler, todos};

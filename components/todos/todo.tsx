@@ -2,20 +2,12 @@ import React, { useState } from 'react'
 import { Flex, Heading, Text } from '@chakra-ui/react'
 import { DocumentData, DocumentReference, Timestamp } from 'firebase/firestore'
 import { motion, Variants } from 'framer-motion'
-import EditMenu from './editmenu'
-import { ScheduleData } from '../../types'
+import moment from 'moment'
+import { TodoData } from '../../ts/types'
+// import EditMenu from './editmenu'
 
-function timestampToTime(timestamp: Timestamp) {
-  const date = new Date(timestamp.seconds * 1000)
-  const hours = date.getHours()
-  const minutes = date.getMinutes()
-  const ampm = hours >= 12 ? 'pm' : 'am'
-  const hours12 = hours % 12
-
-  const minutesStr = minutes < 10 ? `0${minutes}` : minutes
-  const hoursStr = hours12 < 10 ? `0${hours12}` : hours12
-
-  return `${hoursStr}:${minutesStr} ${ampm}`
+function timestampToDate(timestamp: Timestamp) {
+  return moment(timestamp.toDate()).format('DD MMM, YYYY');
 }
 
 function daysToString(days: Array<string>) {
@@ -28,9 +20,15 @@ function daysToString(days: Array<string>) {
   return dayStr.slice(0, -1);
 }
 
+// interface TodoData {
+//   name: string,
+//   description: string,
+//   duedate: Timestamp,
+//   isDone: boolean,
+// }
 
 type Props = {
-  data: ScheduleData,
+  data: TodoData,
   reference: DocumentReference
 }
 
@@ -58,8 +56,9 @@ const hoveredMenu = {
   },
 }
 
-function Schedule({ data, reference }: Props) {
+function Todo({ data, reference }: Props) {
   const [showDisplayMenu, setDisplayMenu] = useState(false);
+  // console.log(data.duedate)
 
   return (
     <motion.div
@@ -82,13 +81,13 @@ function Schedule({ data, reference }: Props) {
         <Text>{data.name}</Text>
         <div>
           <Flex>
-            <Text mr={'3'} color={'gray'}>{daysToString(data.repeatEvery)}</Text>
-            <Text>{timestampToTime(data.time)}</Text>
+            <Text mr={'3'} color={'gray'}>{data.description}</Text>
+            {data.duedate ? <Text>{timestampToDate(data.duedate)}</Text> : null}
             <motion.div
               animate={showDisplayMenu ? 'hovered' : 'inactive'}
               variants={hoveredMenu as Variants}
             >
-              <EditMenu reference={reference} data={data} />
+              {/* <EditMenu reference={reference} data={data} /> */}
             </motion.div>
           </Flex>
         </div>
@@ -97,4 +96,4 @@ function Schedule({ data, reference }: Props) {
   )
 }
 
-export default Schedule
+export default Todo
