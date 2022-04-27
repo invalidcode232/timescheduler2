@@ -17,10 +17,9 @@ const Todo: NextPage = () => {
     useEffect(() => {
         const snapshotCallback = todos.fetch((docs: Array<QueryDocumentSnapshot>) => {
             setTodos(docs);
-
-            docs.forEach(doc => {
-                console.log(doc.data());
-            });
+            // docs.forEach(doc => {
+            //     console.log(doc.data());
+            // });
         })
 
         return snapshotCallback;

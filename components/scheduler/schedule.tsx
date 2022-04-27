@@ -3,7 +3,7 @@ import { Flex, Heading, Text } from '@chakra-ui/react'
 import { DocumentData, DocumentReference, Timestamp } from 'firebase/firestore'
 import { motion, Variants } from 'framer-motion'
 import EditMenu from './editmenu'
-import { ScheduleData } from '../../types'
+import { ScheduleData } from '../../ts/types'
 
 function timestampToTime(timestamp: Timestamp) {
   const date = new Date(timestamp.seconds * 1000)

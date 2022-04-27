@@ -1,4 +1,5 @@
-import { collection, Firestore, CollectionReference, DocumentData, setDoc, addDoc, Timestamp, DocumentSnapshot, QueryDocumentSnapshot, onSnapshot, deleteDoc, DocumentReference } from 'firebase/firestore';
+import { collection, Firestore, CollectionReference, DocumentData, setDoc, addDoc, Timestamp, DocumentSnapshot, QueryDocumentSnapshot, onSnapshot, deleteDoc, DocumentReference, updateDoc } from 'firebase/firestore';
+import { ScheduleData } from '../ts/types';
 
 const DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
@@ -16,17 +17,17 @@ export class Scheduler {
 
     setDone = async (schedule: QueryDocumentSnapshot) => {
         const date = new Date();
-	    const scheduleData = schedule.data()
+	    // const scheduleData = schedule.data()
 
-        setDoc(schedule.ref, { 
-            name: scheduleData.name,
-            time: scheduleData.time,
+        updateDoc(schedule.ref, { 
+            // name: scheduleData.name,
+            // time: scheduleData.time,
             lastDate: Timestamp.fromMillis(date.valueOf()),
-            repeatEvery: scheduleData.repeatEvery,
+            // repeatEvery: scheduleData.repeatEvery,
         });
     }
 
-    addSchedule = async (name: string, time: Timestamp, repeatEvery: Array<string>) => {
+    add = async (name: string, time: Timestamp, repeatEvery: Array<string>) => {
         return addDoc(this.collection, {
             name: name,
             time: time,
@@ -77,11 +78,11 @@ export class Scheduler {
         return deleteDoc(schedule);
     }
 
-    edit = async (schedule: DocumentReference, name: string, time: Timestamp, repeatEvery: Array<string>) => {
+    edit = async (schedule: DocumentReference, data: ScheduleData ) => {
         return setDoc(schedule, {
-            name: name,
-            time: time,
-            repeatEvery: repeatEvery,
+            name: data.name,
+            time: data.time,
+            repeatEvery: data.repeatEvery,
             lastDate: -1,
         });
     }

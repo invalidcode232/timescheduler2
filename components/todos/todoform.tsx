@@ -1,16 +1,19 @@
 import { Button, FormControl, FormLabel, Input, InputGroup, InputLeftElement, ModalBody, ModalCloseButton, ModalFooter, Select, Spacer, useToast } from '@chakra-ui/react'
-import { DocumentData, Timestamp } from 'firebase/firestore'
+import { DocumentData, DocumentReference, Timestamp } from 'firebase/firestore'
 import moment from 'moment'
 import React from 'react'
+import { TodoData } from '../../ts/types'
 import { todos } from '../../utils/context'
 
 type Props = {
     onClose: () => void,
     edit: boolean,
-    data?: DocumentData,
+    data?: TodoData,
+    reference?: DocumentReference
 }
 
-function onAdd(onClose: any, toast: any) {
+
+function callback(edit: boolean, onClose: any, toast: any, reference?: DocumentReference) {
     // TODO: Add callback
     const nameInput = document.querySelector('[name=name]') as HTMLInputElement
     const descriptionInput = document.querySelector('[name=description]') as HTMLInputElement
@@ -18,31 +21,32 @@ function onAdd(onClose: any, toast: any) {
 
     const date = moment(dateInput.value, 'YYYY-MM-DD').toDate()
 
-    todos.add(nameInput.value, date, descriptionInput.value)
-
+    edit && reference ? todos.set(reference, {
+        name: nameInput.value,
+        description: descriptionInput.value,
+        duedate: Timestamp.fromMillis(date.valueOf()),
+        isDone: false,
+    }) : todos.add(nameInput.value, date, descriptionInput.value);
+    
+    const title = edit ? 'Todo edited' : 'Todo added';
+    
     toast({
-        title: 'Todo added',
+        title: title,
         description: `${nameInput.value} is added!`,
         status: 'success',
         duration: 5000,
         isClosable: true,
     })
-
+    
     onClose()
 }
 
-function timestampToTime(timestamp: Timestamp) {
-    const date = new Date(timestamp.seconds * 1000)
-    const hours = date.getHours()
-    const minutes = date.getMinutes()
-    // const minutesStr = minutes < 10 ? '0' + minutes : minutes
-
-    const strTime = hours + ':' + minutes
-    return strTime
+function timestampToDate(timestamp: Timestamp) {
+    // console.log(timestamp.toDate()).format('MM/DD/YYYY');
+    return moment(timestamp.toDate()).format('YYYY-MM-DD');
 }
 
-
-function TodoForm({ onClose, edit, data }: Props) {
+function TodoForm({ onClose, edit, data, reference }: Props) {
     const toast = useToast();
 
     return (
@@ -64,7 +68,7 @@ function TodoForm({ onClose, edit, data }: Props) {
 
                 <FormControl>
                     <FormLabel>Due time (optional)</FormLabel>
-                    <Input type={'date'} name='date' />
+                    <Input type={'date'} name='date' { ...edit ? {defaultValue: data?.duedate ? timestampToDate(data.duedate) : ''} : {} } />
                 </FormControl>
 
                 {/* <Spacer my={'3'} />
@@ -87,7 +91,7 @@ function TodoForm({ onClose, edit, data }: Props) {
 
             <ModalFooter>
                 <Button onClick={onClose} mr={'3'}>Close</Button>
-                <Button colorScheme='teal' onClick={() => onAdd(onClose, toast)}>Add</Button>
+                <Button colorScheme='teal' onClick={() => callback(edit, onClose, toast, reference)}>Add</Button>
             </ModalFooter>
         </>
     )

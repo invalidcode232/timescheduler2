@@ -1,4 +1,5 @@
-import { addDoc, collection, CollectionReference, deleteDoc, DocumentReference, Firestore, onSnapshot, QueryDocumentSnapshot, setDoc, Timestamp } from "firebase/firestore";
+import { addDoc, collection, CollectionReference, deleteDoc, DocumentReference, Firestore, onSnapshot, QueryDocumentSnapshot, setDoc, Timestamp, updateDoc } from "firebase/firestore";
+import { TodoData } from "../ts/types";
 
 export class Todos {
     private db;
@@ -21,29 +22,33 @@ export class Todos {
         });
     }
 
-    set = async (todo: QueryDocumentSnapshot, done: boolean) => {
-        const todoData = todo.data()
-
-        setDoc(todo.ref, {
-            name: todoData.name,
-            isDone: done,
-            duedate: todoData.duedate,
-            description: todoData.description
+    setDone = async (ref: DocumentReference, done: boolean) => {
+        updateDoc(ref, {
+            isDone: done
         });
+    }
+
+    set = async (ref: DocumentReference, data: TodoData) => {
+        setDoc(ref, {
+            name: data.name,
+            isDone: data.isDone,
+            duedate: data.duedate,
+            description: data.description
+        })
     }
 
     delete = async (todoRef: DocumentReference) => {
         return deleteDoc(todoRef);
     }
 
-    edit = async (todoRef: DocumentReference, name: string, isDone: boolean, duedate?: Date, description?: string) => {
-        return setDoc(todoRef, {
-            name: name,
-            isDone: isDone,
-            duedate: duedate ? Timestamp.fromMillis(duedate.valueOf()) : null,
-            description: description
-        });
-    }
+    // edit = async (todoRef: DocumentReference, name: string, isDone: boolean, duedate?: Date, description?: string) => {
+    //     return setDoc(todoRef, {
+    //         name: name,
+    //         isDone: isDone,
+    //         duedate: duedate ? Timestamp.fromMillis(duedate.valueOf()) : null,
+    //         description: description
+    //     });
+    // }
         
     constructor (db: Firestore) {
         this.db = db;

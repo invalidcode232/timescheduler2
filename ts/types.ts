@@ -9,7 +9,7 @@ interface TodoData {
 
 interface ScheduleData {
     name: string,
-    lastDate: Timestamp,
+    lastDate: number | Timestamp,
     repeatEvery: Array<string>,
     time: Timestamp,
 }

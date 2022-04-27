@@ -20,7 +20,7 @@ function EditMenu({ reference, data }: Props) {
       <button onClick={onOpen}><FaPencilAlt /></button>
 
       <ModalForm isOpen={isOpen} name={'Edit schedule'} onClose={onClose}>
-        <ScheduleForm edit={true} onClose={onClose} data={data} />
+        <ScheduleForm edit={true} onClose={onClose} data={data} reference={reference} />
       </ModalForm>
     </>
   )

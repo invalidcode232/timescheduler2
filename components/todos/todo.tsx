@@ -1,23 +1,15 @@
 import React, { useState } from 'react'
-import { Flex, Heading, Text } from '@chakra-ui/react'
+import { Checkbox, Flex, Heading, Text } from '@chakra-ui/react'
 import { DocumentData, DocumentReference, Timestamp } from 'firebase/firestore'
 import { motion, Variants } from 'framer-motion'
 import moment from 'moment'
 import { TodoData } from '../../ts/types'
+import { todos } from '../../utils/context'
+import EditMenu from './editmenu'
 // import EditMenu from './editmenu'
 
 function timestampToDate(timestamp: Timestamp) {
   return moment(timestamp.toDate()).format('DD MMM, YYYY');
-}
-
-function daysToString(days: Array<string>) {
-  let dayStr = '';
-
-  days.forEach((day) => {
-    dayStr = dayStr.concat(day, '/');
-  });
-
-  return dayStr.slice(0, -1);
 }
 
 // interface TodoData {
@@ -56,6 +48,14 @@ const hoveredMenu = {
   },
 }
 
+function handleChange(e: React.ChangeEvent<HTMLInputElement>, reference: DocumentReference) {
+  const isChecked = e.target.checked;
+
+  todos.setDone(reference, isChecked);
+
+  // console.log(isChecked);
+}
+
 function Todo({ data, reference }: Props) {
   const [showDisplayMenu, setDisplayMenu] = useState(false);
   // console.log(data.duedate)
@@ -78,7 +78,10 @@ function Todo({ data, reference }: Props) {
           setDisplayMenu(false)
         }}
       >
-        <Text>{data.name}</Text>
+        <Flex>
+          <Checkbox defaultChecked={data.isDone} mr={'3'} onChange={(e) => handleChange(e, reference)} />
+          <Text>{data.name}</Text>
+        </Flex>
         <div>
           <Flex>
             <Text mr={'3'} color={'gray'}>{data.description}</Text>
@@ -87,7 +90,7 @@ function Todo({ data, reference }: Props) {
               animate={showDisplayMenu ? 'hovered' : 'inactive'}
               variants={hoveredMenu as Variants}
             >
-              {/* <EditMenu reference={reference} data={data} /> */}
+            <EditMenu reference={reference} data={data}/>
             </motion.div>
           </Flex>
         </div>
